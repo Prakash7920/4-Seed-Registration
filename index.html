@@ -233,9 +233,7 @@ document.getElementById("registrationForm").addEventListener("submit", function(
 
 fetch(WEB_APP_URL, {
   method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
+  redirect: "follow",
   body: JSON.stringify({
     sponsorId: sponsorId.value,
     sponsorName: sponsorName.value,
@@ -244,15 +242,15 @@ fetch(WEB_APP_URL, {
     place: document.getElementById("place").value
   })
 })
-.then(response => response.json())
-.then(result => {
-  console.log(result);
+.then(res => res.text())
+.then(data => {
+  console.log(data);
   document.getElementById("formPage").style.display = "none";
   document.getElementById("successPage").style.display = "block";
 })
-.catch(error => {
-  console.error("ERROR:", error);
-  alert("Registration failed: " + error.message);
+.catch(err => {
+  console.error(err);
+  alert(err);
 });
 
 });
