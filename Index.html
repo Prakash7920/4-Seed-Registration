@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>4 Seed Registration</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#eef8ef;
+padding:20px;
+}
+
+.container{
+max-width:420px;
+margin:auto;
+background:#fff;
+padding:20px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,.15);
+}
+
+.logo{
+text-align:center;
+font-size:32px;
+font-weight:bold;
+color:#0b7a3d;
+margin-bottom:10px;
+}
+
+.subtitle{
+text-align:center;
+color:#666;
+margin-bottom:25px;
+}
+
+label{
+display:block;
+margin-top:15px;
+font-weight:bold;
+}
+
+input{
+width:100%;
+padding:12px;
+margin-top:5px;
+border:1px solid #ccc;
+border-radius:8px;
+font-size:16px;
+}
+
+input[readonly]{
+background:#f2f2f2;
+}
+
+#status{
+margin-top:8px;
+font-size:14px;
+font-weight:bold;
+}
+
+button{
+width:100%;
+margin-top:25px;
+padding:14px;
+background:#0b7a3d;
+color:white;
+border:none;
+border-radius:8px;
+font-size:17px;
+}
+
+button:active{
+background:#07562b;
+}
+
+.success{
+display:none;
+text-align:center;
+}
+
+.success h2{
+color:green;
+margin-bottom:15px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div id="formPage">
+
+<div class="logo">
+🌱 4 Seed
+</div>
+
+<div class="subtitle">
+Partner Registration
+</div>
+
+<form id="registrationForm">
+
+<label>Sponsor ID</label>
+
+<input
+type="text"
+id="sponsorId"
+placeholder="Enter Sponsor ID">
+
+<label>Sponsor Name</label>
+
+<input
+type="text"
+id="sponsorName"
+readonly
+placeholder="Auto Verified">
+
+<div id="status"></div>
+
+<label>Full Name</label>
+
+<input
+type="text"
+id="fullName"
+placeholder="Enter Full Name">
+
+<label>Mobile Number</label>
+
+<input
+type="tel"
+id="mobile"
+placeholder="Enter Mobile Number">
+
+<label>Place</label>
+
+<input
+type="text"
+id="place"
+placeholder="Enter Place">
+
+<button type="submit">
+Submit Registration
+</button>
+
+</form>
+
+</div>
+
+<div id="successPage" class="success">
+
+<h2>
+✅ Registration Submitted
+</h2>
+
+<p>
+Thank you for registering with
+<b>4 Seed</b>.
+</p>
+
+<br>
+
+<p>
+Our team will verify your details.
+</p>
+
+<br>
+
+<button onclick="location.reload()">
+Register Another Partner
+</button>
+
+</div>
+
+</div>
+
+<script>
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxiu_bs0phdI2lfUSu03JEV1Ojy1Je-VgG4c3B28luZHg_sPMMlNfjeYQcmS_8gNwbnyQ/exec";
+
+const sponsors = {
+  "4S1001": "Rafiq Mohammad",
+  "4S1002": "Prakash M",
+  "4S1003": "Ravi",
+  "4S1004": "Suresh"
+};
+
+const sponsorId = document.getElementById("sponsorId");
+const sponsorName = document.getElementById("sponsorName");
+const status = document.getElementById("status");
+
+sponsorId.addEventListener("input", function () {
+
+    const id = sponsorId.value.trim();
+
+    if (sponsors[id]) {
+        sponsorName.value = sponsors[id];
+        status.innerHTML = "✅ Sponsor Verified";
+        status.style.color = "green";
+    } else {
+        sponsorName.value = "";
+        status.innerHTML = "❌ Invalid Sponsor ID";
+        status.style.color = "red";
+    }
+
+});
+
+document.getElementById("registrationForm").addEventListener("submit", function(e){
+
+    e.preventDefault();
+
+    if(
+        sponsorId.value==="" ||
+        sponsorName.value==="" ||
+        document.getElementById("fullName").value==="" ||
+        document.getElementById("mobile").value==="" ||
+        document.getElementById("place").value===""
+    ){
+        alert("Please fill all details correctly.");
+        return;
+    }
+
+fetch(WEB_APP_URL, {
+  method: "POST",
+  headers: {
+    "Content-Type": "text/plain;charset=utf-8"
+  },
+  body: JSON.stringify({
+    sponsorId: sponsorId.value,
+    sponsorName: sponsorName.value,
+    fullName: document.getElementById("fullName").value,
+    mobile: document.getElementById("mobile").value,
+    place: document.getElementById("place").value
+  })
+})
+.then(response => response.text())
+.then(result => {
+
+  console.log(result);
+
+  document.getElementById("formPage").style.display = "none";
+  document.getElementById("successPage").style.display = "block";
+
+})
+.catch(error => {
+  console.log("ERROR:", error);
+  alert(error.message);
+});
+
+});
+
+</script>
+</body>
+</html>
