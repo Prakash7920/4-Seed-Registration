@@ -260,6 +260,7 @@ sponsorId.addEventListener("change", async () => {
 
         const res = await fetch(url);
         const result = await res.json();
+        alert(JSON.stringify(result));
 
         if (result.status) {
 
