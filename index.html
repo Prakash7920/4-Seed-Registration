@@ -230,7 +230,7 @@ Register Another Partner
 </div>
 
 <script>
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbziFFNCsGQfoGl5uWI3pgfhvFI4o8Dep2DP0yd5ic3IZgFEPCmNJNJoPGi4rBGhc5w7/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxneH3B0sADiauTOiHpk2kZi2AgYIlC1XdK6MZxI7M0IP-LUk630Kwwy_WeXPWwWdrJ/exec";
 
 const sponsorId = document.getElementById("sponsorId");
 const sponsorName = document.getElementById("sponsorName");
@@ -258,7 +258,7 @@ sponsorId.addEventListener("change", async () => {
             encodeURIComponent(id) +
             "&t=" + Date.now();
 
-        const res = await fetch(url);
+        const res = await fetch(WEB_APP_URL);
         const result = await res.json();
         alert(JSON.stringify(result));
 
@@ -309,27 +309,20 @@ submitBtn.disabled=true;
 
 try{
 
-const response = await fetch(WEB_APP_URL,{
-method:"POST",
-headers:{
-  "Content-Type":"application/json"
-},
-body:JSON.stringify({
-
-sponsorId:sponsorId.value,
-
-sponsorName:sponsorName.value,
-
-fullName:fullName.value,
-
-mobile:mobile.value,
-
-place:place.value
-
-})
-
+const response = await fetch(WEB_APP_URL, {
+  method: "POST",
+  headers: {
+    "Content-Type": "text/plain;charset=utf-8"
+  },
+  body: JSON.stringify({
+    sponsorId: sponsorId.value,
+    sponsorName: sponsorName.value,
+    fullName: fullName.value,
+    mobile: mobile.value,
+    place: place.value
+  })
 });
-
+    
 const result=await response.json();
 
 if(result.success){
