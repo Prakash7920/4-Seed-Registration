@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -73,14 +74,16 @@ width:100%;
 margin-top:25px;
 padding:14px;
 background:#0b7a3d;
-color:white;
+color:#fff;
 border:none;
 border-radius:8px;
 font-size:17px;
+cursor:pointer;
 }
 
-button:active{
-background:#07562b;
+button:disabled{
+background:#999;
+cursor:not-allowed;
 }
 
 .success{
@@ -91,6 +94,29 @@ text-align:center;
 .success h2{
 color:green;
 margin-bottom:15px;
+}
+
+.success p{
+margin:8px 0;
+font-size:16px;
+}
+
+.partner-box{
+margin-top:20px;
+padding:15px;
+background:#eef8ef;
+border-radius:10px;
+border:1px solid #0b7a3d;
+}
+
+.partner-box h3{
+color:#0b7a3d;
+margin-bottom:10px;
+}
+
+.partner-box p{
+margin:6px 0;
+font-weight:bold;
 }
 
 </style>
@@ -118,7 +144,8 @@ Partner Registration
 <input
 type="text"
 id="sponsorId"
-placeholder="Enter Sponsor ID">
+placeholder="Enter Sponsor ID"
+autocomplete="off">
 
 <label>Sponsor Name</label>
 
@@ -151,7 +178,9 @@ type="text"
 id="place"
 placeholder="Enter Place">
 
-<button type="submit">
+<button
+type="submit"
+id="submitBtn">
 Submit Registration
 </button>
 
@@ -159,27 +188,41 @@ Submit Registration
 
 </div>
 
-<div id="successPage" class="success">
+<div
+id="successPage"
+class="success">
 
 <h2>
-✅ Registration Submitted
+✅ Registration Successful
 </h2>
 
-<p>
-Thank you for registering with
-<b>4 Seed</b>.
-</p>
+<div class="partner-box">
 
-<br>
+<h3>Partner Details</h3>
 
 <p>
-Our team will verify your details.
+Partner ID :
+<span id="partnerIdText"></span>
 </p>
+
+<p>
+Sponsor :
+<span id="sponsorNameText"></span>
+</p>
+
+<p>
+Name :
+<span id="partnerNameText"></span>
+</p>
+
+</div>
 
 <br>
 
 <button onclick="location.reload()">
+
 Register Another Partner
+
 </button>
 
 </div>
@@ -187,120 +230,137 @@ Register Another Partner
 </div>
 
 <script>
-  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwOSC7ZNfoG9dolv1rJgWl6F0YcgSWqux49Apo3tdNU_IgbIvuNGKq1dwYZ4clC_TX_/exec";
-
-sponsorId.addEventListener("input", async function () {
-
-  const id = sponsorId.value.trim();
-
-  if (id === "") {
-    sponsorName.value = "";
-    status.innerHTML = "";
-    return;
-  }
-
-  const res = await fetch(
-    WEB_APP_URL +
-    "?action=verifySponsor&sponsorId=" +
-    encodeURIComponent(id)
-  );
-
-  const result = await res.json();
-
-  if (result.status) {
-    sponsorName.value = result.sponsorName;
-    status.innerHTML = "✅ Sponsor Verified";
-    status.style.color = "green";
-  } else {
-    sponsorName.value = "";
-    status.innerHTML = "❌ Invalid Sponsor ID";
-    status.style.color = "red";
-  }
-
-});
+const WEB_APP_URL = "YOUR_WEB_APP_URL_HERE";
 
 const sponsorId = document.getElementById("sponsorId");
 const sponsorName = document.getElementById("sponsorName");
 const status = document.getElementById("status");
+const submitBtn = document.getElementById("submitBtn");
 
-sponsorId.addEventListener("input", function () {
+// Sponsor Verification
+sponsorId.addEventListener("input", async () => {
 
     const id = sponsorId.value.trim();
 
-    if (sponsors[id]) {
-        sponsorName.value = sponsors[id];
-        status.innerHTML = "✅ Sponsor Verified";
-        status.style.color = "green";
-    } else {
-        sponsorName.value = "";
-        status.innerHTML = "❌ Invalid Sponsor ID";
-        status.style.color = "red";
-    }
+    sponsorName.value = "";
+    status.innerHTML = "";
+    submitBtn.disabled = true;
 
-});
-
-document.getElementById("registrationForm").addEventListener("submit", function(e){
-
-    e.preventDefault();
-
-    if(
-        sponsorId.value==="" ||
-        sponsorName.value==="" ||
-        document.getElementById("fullName").value==="" ||
-        document.getElementById("mobile").value==="" ||
-        document.getElementById("place").value===""
-    ){
-        alert("Please fill all details correctly.");
+    if(id===""){
         return;
     }
 
-fetch(WEB_APP_URL, {
-  method: "POST",
-  redirect: "follow",
-  body: JSON.stringify({
-    sponsorId: sponsorId.value,
-    sponsorName: sponsorName.value,
-    fullName: document.getElementById("fullName").value,
-    mobile: document.getElementById("mobile").value,
-    place: document.getElementById("place").value
-  })
-})
-.then(result => {
+    try{
 
-    if(result.success){
+        const res = await fetch(
+            WEB_APP_URL +
+            "?action=verifySponsor&sponsorId=" +
+            encodeURIComponent(id)
+        );
 
-        document.getElementById("successPage").innerHTML = `
-        <h2>✅ Registration Successful</h2>
+        const result = await res.json();
 
-        <p><b>Partner ID :</b> ${result.partnerId}</p>
+        if(result.status){
 
-        <p><b>Name :</b> ${document.getElementById("fullName").value}</p>
+            sponsorName.value = result.sponsorName;
 
-        <p><b>Sponsor :</b> ${sponsorName.value}</p>
+            status.innerHTML = "✅ Sponsor Verified";
 
-        <br>
+            status.style.color = "green";
 
-        <button onclick="location.reload()">
-        Register Another Partner
-        </button>
-        `;
+            submitBtn.disabled = false;
 
-        document.getElementById("formPage").style.display="none";
-        document.getElementById("successPage").style.display="block";
+        }else{
 
-    }else{
+            sponsorName.value = "";
 
-        alert(result.message);
+            status.innerHTML = "❌ Invalid Sponsor ID";
+
+            status.style.color = "red";
+
+        }
+
+    }catch(err){
+
+        status.innerHTML="❌ Unable to verify Sponsor";
+
+        status.style.color="red";
 
     }
 
+});
+
+
+// Registration Submit
+
+document.getElementById("registrationForm").addEventListener("submit",async function(e){
+
+e.preventDefault();
+
+if(
+sponsorId.value==="" ||
+sponsorName.value==="" ||
+fullName.value==="" ||
+mobile.value==="" ||
+place.value===""){
+alert("Please fill all details.");
+return;
+}
+
+submitBtn.disabled=true;
+
+try{
+
+const response=await fetch(WEB_APP_URL,{
+method:"POST",
+body:JSON.stringify({
+
+sponsorId:sponsorId.value,
+
+sponsorName:sponsorName.value,
+
+fullName:fullName.value,
+
+mobile:mobile.value,
+
+place:place.value
+
 })
-.catch(err=>{
-    alert(err);
-});
 
 });
 
+const result=await response.json();
+
+if(result.success){
+
+document.getElementById("partnerIdText").innerHTML=result.partnerId;
+
+document.getElementById("partnerNameText").innerHTML=fullName.value;
+
+document.getElementById("sponsorNameText").innerHTML=sponsorName.value;
+
+document.getElementById("formPage").style.display="none";
+
+document.getElementById("successPage").style.display="block";
+
+}else{
+
+alert(result.message || result.error);
+
+submitBtn.disabled=false;
+
+}
+
+}catch(err){
+
+alert("Registration Failed");
+
+submitBtn.disabled=false;
+
+}
+
+});
 </script>
+
 </body>
 </html>
