@@ -230,7 +230,7 @@ Register Another Partner
 </div>
 
 <script>
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz03kNmXb2l6pSOkjkYqxJGUeevZQpasOCEbUlkBoUSyajubEdJVwsyF1GSNGsehQmZ/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx1tVkEq8ZqbesHDVDdWYFlNTJu624kxiq5oL2XIOMfisPDG9sWSQ7cj1iFk-s8JO8N/exec";
 
 const sponsorId = document.getElementById("sponsorId");
 const sponsorName = document.getElementById("sponsorName");
@@ -252,11 +252,15 @@ sponsorId.addEventListener("input", async () => {
 
     try{
 
-        const res = await fetch(
-            WEB_APP_URL +
-            "?action=verifySponsor&sponsorId=" +
-            encodeURIComponent(id)
-        );
+        const url =
+  WEB_APP_URL +
+  "?action=verifySponsor&sponsorId=" +
+  encodeURIComponent(id) +
+  "&t=" + Date.now();
+
+const res = await fetch(url);
+
+alert(url);
 
         const result = await res.json();
         alert(JSON.stringify(result));
