@@ -242,6 +242,12 @@ sponsorId.addEventListener("input", async () => {
 
     const id = sponsorId.value.trim();
 
+alert("ID = " + id);
+
+const url =
+  WEB_APP_URL +
+  "?action=verifySponsor&sponsorId=" +
+  encodeURIComponent(id);
     sponsorName.value = "";
     status.innerHTML = "";
     submitBtn.disabled = true;
