@@ -259,6 +259,7 @@ sponsorId.addEventListener("input", async () => {
         );
 
         const result = await res.json();
+        alert(JSON.stringify(result));
 
         if(result.status){
 
@@ -311,8 +312,11 @@ submitBtn.disabled=true;
 
 try{
 
-const response=await fetch(WEB_APP_URL,{
+const response = await fetch(WEB_APP_URL,{
 method:"POST",
+headers:{
+  "Content-Type":"application/json"
+},
 body:JSON.stringify({
 
 sponsorId:sponsorId.value,
