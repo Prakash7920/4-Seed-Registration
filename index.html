@@ -238,64 +238,50 @@ const status = document.getElementById("status");
 const submitBtn = document.getElementById("submitBtn");
 
 // Sponsor Verification
-sponsorId.addEventListener("input", async () => {
+sponsorId.addEventListener("change", async () => {
 
     const id = sponsorId.value.trim();
 
-alert("ID = " + id);
-
-const url =
-  WEB_APP_URL +
-  "?action=verifySponsor&sponsorId=" +
-  encodeURIComponent(id);
     sponsorName.value = "";
     status.innerHTML = "";
     submitBtn.disabled = true;
 
-    if(id===""){
+    if (id.length < 6) {
         return;
     }
 
-    try{
+    try {
 
         const url =
-  WEB_APP_URL +
-  "?action=verifySponsor&sponsorId=" +
-  encodeURIComponent(id) +
-  "&t=" + Date.now();
+            WEB_APP_URL +
+            "?action=verifySponsor&sponsorId=" +
+            encodeURIComponent(id) +
+            "&t=" + Date.now();
 
-const res = await fetch(url);
-
-alert(url);
-
+        const res = await fetch(url);
         const result = await res.json();
-        alert(JSON.stringify(result));
 
-        if(result.status){
+        if (result.status) {
 
             sponsorName.value = result.sponsorName;
-
             status.innerHTML = "✅ Sponsor Verified";
-
             status.style.color = "green";
-
             submitBtn.disabled = false;
 
-        }else{
+        } else {
 
             sponsorName.value = "";
-
             status.innerHTML = "❌ Invalid Sponsor ID";
-
             status.style.color = "red";
 
         }
 
-    }catch(err){
+    } catch (err) {
 
-        status.innerHTML="❌ Unable to verify Sponsor";
+        console.log(err);
 
-        status.style.color="red";
+        status.innerHTML = "❌ Unable to verify Sponsor";
+        status.style.color = "red";
 
     }
 
