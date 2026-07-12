@@ -189,12 +189,35 @@ Register Another Partner
 <script>
   const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxBRezZLPT19B3eTb_UMRsQYfLHA8rmwsebbRtEDLgaxe_3ziQ91AmVsZzLgk2BxD4u/exec";
 
-const sponsors = {
-  "4S1001": "Rafiq Mohammad",
-  "4S1002": "Prakash M",
-  "4S1003": "Ravi",
-  "4S1004": "Suresh"
-};
+sponsorId.addEventListener("input", async function () {
+
+  const id = sponsorId.value.trim();
+
+  if (id === "") {
+    sponsorName.value = "";
+    status.innerHTML = "";
+    return;
+  }
+
+  const res = await fetch(
+    WEB_APP_URL +
+    "?action=verifySponsor&sponsorId=" +
+    encodeURIComponent(id)
+  );
+
+  const result = await res.json();
+
+  if (result.status) {
+    sponsorName.value = result.sponsorName;
+    status.innerHTML = "✅ Sponsor Verified";
+    status.style.color = "green";
+  } else {
+    sponsorName.value = "";
+    status.innerHTML = "❌ Invalid Sponsor ID";
+    status.style.color = "red";
+  }
+
+});
 
 const sponsorId = document.getElementById("sponsorId");
 const sponsorName = document.getElementById("sponsorName");
@@ -242,15 +265,38 @@ fetch(WEB_APP_URL, {
     place: document.getElementById("place").value
   })
 })
-.then(res => res.text())
-.then(data => {
-  console.log(data);
-  document.getElementById("formPage").style.display = "none";
-  document.getElementById("successPage").style.display = "block";
+.then(result => {
+
+    if(result.success){
+
+        document.getElementById("successPage").innerHTML = `
+        <h2>✅ Registration Successful</h2>
+
+        <p><b>Partner ID :</b> ${result.partnerId}</p>
+
+        <p><b>Name :</b> ${document.getElementById("fullName").value}</p>
+
+        <p><b>Sponsor :</b> ${sponsorName.value}</p>
+
+        <br>
+
+        <button onclick="location.reload()">
+        Register Another Partner
+        </button>
+        `;
+
+        document.getElementById("formPage").style.display="none";
+        document.getElementById("successPage").style.display="block";
+
+    }else{
+
+        alert(result.message);
+
+    }
+
 })
-.catch(err => {
-  console.error(err);
-  alert(err);
+.catch(err=>{
+    alert(err);
 });
 
 });
