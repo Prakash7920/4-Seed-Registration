@@ -354,9 +354,12 @@ submitBtn.disabled=false;
 
 }catch(err){
 
-alert("Registration Failed");
+    alert(err.toString());
 
-submitBtn.disabled=false;
+    status.innerHTML = "❌ Registration Failed";
+    status.style.color = "red";
+
+    submitBtn.disabled = false;
 
 }
 
